@@ -32,7 +32,7 @@ const SavedBooks = () => {
       await deleteBook({ variables: { bookId: bookId } });
       removeBookId(bookId);
     } catch {
-      console.error("error")
+      console.error(error)
     };
   };
 
