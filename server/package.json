@@ -18,9 +18,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.10"
   },
-  "dependenciesComments": {
-    "start": "May need to remove bcrypt? Check the JWT lectures when you get that far"
-  },
   "devDependencies": {
     "nodemon": "^2.0.3"
   }
