@@ -5,7 +5,6 @@ const { authMiddleware } = require('./utils/auth');
 const {typeDefs, resolvers } = require('./schemas')
 
 const db = require('./config/connection');
-const { ApolloServer } = require('apollo-server-express');
 
 // Remove the routes
   // const routes = require('./routes');
