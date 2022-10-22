@@ -5,30 +5,32 @@ const { signToken } = require("../utils/auth");
 
 const resolvers = {
     Query: {
-        getUser: async ( parent, { user = null, args } ) => {
-            return await User.findOne({
-                $or: [
-                    { _id: user ? user._id : args.id }, 
-                    { username: args.username }
-                ],
-              });
+        me: async (parent, args, context) => {
+            // Check context (AuthMiddleware) to see if there is a user logged in
+            if(context.user) {
+                const data = await User
+                    .findOne({ _id: context.user._id })
+                    .select(" -password ");
+                return data;
+            }
+            throw new AuthenticationError("Not Logged In");
         },
     },
 
     
     Mutation: {
 
-        createUser: async ( parent, { body } ) => {
-            const user = await User.create(body);
+        createUser: async ( parent, args ) => {
+            const user = await User.create(args);
             const token = signToken(user);
             return { token, user };
         },
 
-        login: async ( parent, { body }) => {
+        login: async ( parent, args) => {
             const user = await User.findOne({ 
                 $or: [
-                    { username: body.username }, 
-                    { email: body.email }
+                    { username: args.username }, 
+                    { email: args.email }
                 ] 
             });
 
@@ -36,7 +38,7 @@ const resolvers = {
                 throw new AuthenticationError('No user found with this email address');
             }
 
-            const correctPw = await user.isCorrectPassword(body.password);
+            const correctPw = await user.isCorrectPassword(args.password);
 
             if (!correctPw) {
                 throw new AuthenticationError('Incorrect Password');
@@ -47,18 +49,18 @@ const resolvers = {
             return {token, user};
         },
 
-        saveBook: async (parent, { user, body }) => {
+        saveBook: async (parent, args, context) => {
             return await User.findOneAndUpdate(
-                { _id: user._id },
-                { $addToSet: { savedBooks: body } },
+                { _id: context.user._id },
+                { $addToSet: { savedBooks: args } },
                 { new: true, runValidators: true }
             );
         },
 
-        deleteBook: async ( parent, {user, args} ) => {
+        deleteBook: async ( parent, args, context ) => {
             return await User.findOneAndUpdate(
-                { _id: user._id },
-                { $pull: { savedBooks: { bookId: params.bookId } } },
+                { _id: context.user._id },
+                { $pull: { savedBooks: { bookId: args.bookId } } },
                 { new: true }
               );
         },
