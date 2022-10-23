@@ -1,11 +1,10 @@
 import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
-// import { getMe, deleteBook } from '../utils/API'; // I don't think this is needed?
 
-// Add Mutation/query logic
-import { useQuery, useMutation } from '@apollo/client'
-import { QUERY_ME } from '../utils/queries.js'
-import { DELETE_BOOK } from '../utils/mutations'
+// Add Mutation/query imports
+import { useQuery, useMutation } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries.js';
+import { DELETE_BOOK } from '../utils/mutations';
 
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
